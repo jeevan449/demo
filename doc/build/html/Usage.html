@@ -1,0 +1,302 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Usage &#8212; jeevan 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="FrameWork" href="Framework.html" />
+    <link rel="prev" title="Introduction" href="Intro.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>Writing unit test cases for REST API’s (No authentication):</p>
+<div class="section" id="no-authentication">
+<h2>No authentication<a class="headerlink" href="#no-authentication" title="Permalink to this headline">¶</a></h2>
+<p>Step-1: Importing pyRest_lib</p>
+<p>from rest_lib import pyRest_lib
+Step-2: Writing the setUp method</p>
+<dl class="docutils">
+<dt>def setUp(self):</dt>
+<dd>self.rest = pyRest_lib.PyRestLib(url=’<a class="reference external" href="https://httpbin.org">https://httpbin.org</a>’)
+self.log = self.rest.get_logObj()
+self.json = self.rest.get_jsonObj()</dd>
+</dl>
+<p>Creating object for PyRestLib class and passing URL as parameter.
+Getting logger &amp; Json object
+Step-3: Writing unittests for GET,POST,PUT,DELETE requests. send_request single method for sending GET/POST/PUT/DELETE request types.</p>
+<p>GET Request example:
+Sample GET request and response.</p>
+<p>HTTP GET request:
+<cite>https://httpbin.org/get&lt;/dd&gt;</cite>
+Response Data</p>
+<blockquote>
+<div><p>“args”: {},
+“headers”: {</p>
+<blockquote>
+<div>“Accept”: “text/html,application/xhtml+xml,application/xml;q=0.9,*/<a href="#id1"><span class="problematic" id="id2">*</span></a>;q=0.8”,
+“Accept-Encoding”: “gzip, deflate, br”,
+“Accept-Language”: “en-US,en;q=0.5”,
+“Connection”: “close”,
+“Cookie”: “_gauges_unique_year=1; _gauges_unique=1; _gauges_unique_month=1; _gauges_unique_hour=1; _gauges_unique_day=1”,
+“Host”: “httpbin.org”,
+“Referer”: “<a class="reference external" href="https://httpbin.org/">https://httpbin.org/</a>”,
+“Upgrade-Insecure-Requests”: “1”,
+“User-Agent”: “Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0”</div></blockquote>
+<p>},
+“origin”: “36.255.85.10”,
+“url”: “<a class="reference external" href="https://httpbin.org/get">https://httpbin.org/get</a>”</p>
+</div></blockquote>
+<p>}
+Unittest for sending above request and verifing Host value from response.
+def test_get_request(self):</p>
+<blockquote>
+<div>response =  self.rest.send_request(‘/get’,method_name=’GET’)
+response_code = response[‘code’]
+response_data = response[‘data’]
+verify_host = self.json.get_key_value(response_data,’Host’)
+response_headers = response[‘headers’]
+self.assertEqual(response_code,200)
+self.assertEqual(verify_host,’httpbin.org’)</div></blockquote>
+<p>Passing path and request method type as passing parameters to send_request.
+return object response contains response data,code and headers and that can be accessed by response[‘data’],response[‘code’] &amp; response[‘headers’].
+Passing response data and key to get_key_value method to get value.
+Asserting response status code &amp; data.
+POST Request example:
+Sample POST request &amp; response.</p>
+<p>HTTP POST Request <a class="reference external" href="https://httpbin.org/post">https://httpbin.org/post</a></p>
+<p>Parameters {‘test’:’post’}
+Response Data</p>
+<dl class="docutils">
+<dt>{</dt>
+<dd><p class="first">“args”: {},
+“data”: “{“test”: “post”}”,
+“files”: {},
+“form”: {},
+“headers”: {</p>
+<blockquote>
+<div>“Accept”: “<em>/</em>”,
+“Accept-Encoding”: “gzip, deflate”,
+“Connection”: “close”,
+“Content-Length”: “16”,
+“Content-Type”: “application/json”,
+“Host”: “httpbin.org”,
+“User-Agent”: “python-requests/2.18.4”</div></blockquote>
+<p>},
+“json”: {</p>
+<blockquote>
+<div>“test”: “post”</div></blockquote>
+<p class="last">},
+“origin”: “36.255.85.10”,
+“url”: “<a class="reference external" href="https://httpbin.org/post">https://httpbin.org/post</a>”</p>
+</dd>
+</dl>
+<p>}
+def test_post_request(self):</p>
+<blockquote>
+<div><p>data = {‘test’:’post’} # Step 1
+json_data = self.json.dump_json_data(data) # Step 1
+response = self.rest.send_request(‘/post’,method_name=’POST’,</p>
+<blockquote>
+<div>parameters=json_data)</div></blockquote>
+<p>response_code = response[‘code’]
+response_data = response[‘data’]
+verify_response_data = self.json.get_key_value(response_data,’test’)
+self.assertEqual(response_code, 200)
+self.assertEqual(verify_response_data,’post’)</p>
+</div></blockquote>
+<p>Converting python dictionary into JSON data.
+Passing path and request method type as parameters to send_request.
+return object response contains response data,code and headers and that can be accessed by response[‘data’],response[‘code’] &amp; response[‘headers’].
+Passing response data and key to get_key_value method to get value.
+Asserting response status code &amp; data.
+Same way for PUT &amp; DELETE request.
+PUT Request example:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>def test_put_request(self):</dt>
+<dd>response = self.rest.send_request(‘/put’,method_name=’PUT’)
+code = response[‘code’]
+self.assertEqual(code, 200)</dd>
+</dl>
+</div></blockquote>
+<p>DELETE Request example:
+def test_delete_request(self):</p>
+<blockquote>
+<div>response = self.rest.send_request(‘/delete’,method_name=’DELETE’)
+code = response[‘code’]
+self.assertEqual(code, 200)</div></blockquote>
+<p>Writing unit test cases for REST API’s with authentication):</p>
+</div>
+<div class="section" id="with-authentication">
+<h2>With Authentication<a class="headerlink" href="#with-authentication" title="Permalink to this headline">¶</a></h2>
+<p>Authentications supported HTTPBasicAuth,HTTPDigestAuth and Session</p>
+<p>Step 1: Add authentication details in config.yaml file.</p>
+<p>url : <a class="reference external" href="https://api.github.com">https://api.github.com</a>
+Authentication_Type: HTTPBasicAuth
+HTTPBasicAuth:</p>
+<blockquote>
+<div>username: xxxxxxxxx
+password: xxxxxxxxx</div></blockquote>
+<dl class="docutils">
+<dt>HTTPDigestAuth:</dt>
+<dd>username: null
+password: null</dd>
+<dt>Session:</dt>
+<dd><dl class="first docutils">
+<dt>cookie_header:</dt>
+<dd>header: ‘sample cookie’</dd>
+</dl>
+<p class="last">Auth: False
+username: ‘user’
+password: ‘password’</p>
+</dd>
+</dl>
+<p>#Make rest_header when you want to send any custom headers
+headers:</p>
+<blockquote>
+<div>“Content-Type”: “application/json”</div></blockquote>
+<p>url: API test URL
+Authentication_Type: Authentication type has to be given. Default null.
+headers: Custom headers has to be added to send in every request.
+Step 2: Importing pyRest_lib from rest_lib import pyRest_lib</p>
+<p>Step 3:</p>
+<dl class="docutils">
+<dt>def setUp(self):</dt>
+<dd>file = os.path.abspath(‘resources//config.yaml’)        # Step 1
+self.rest_obj = pyRest_lib.PyRestLib(file_path=file,auth=’HTTPBasicAuth’)    # Step 2
+self.log = self.rest_obj.get_logObj()                   # Step 3
+self.json = self.rest_obj.get_jsonObj()                 # Step 3</dd>
+</dl>
+<p>Getting the config file path location
+Passing file path to PyRestLib class and authentication type.
+Getting json and logger object
+Step 4: Now writing unittests for GET request. GET Sample Request: GET <a class="reference external" href="https://api.github.com/user/following">https://api.github.com/user/following</a> Response: Status: 200 OK</p>
+<dl class="docutils">
+<dt>[{</dt>
+<dd>“login”: “jeevan449”,
+“id”: 20350885,
+“avatar_url”: “<a class="reference external" href="https://avatars1.githubusercontent.com/u/20350885?v=4">https://avatars1.githubusercontent.com/u/20350885?v=4</a>”,
+“gravatar_id”: “”,
+“url”: “<a class="reference external" href="https://api.github.com/users/jeevan449">https://api.github.com/users/jeevan449</a>”,
+“html_url”: “<a class="reference external" href="https://github.com/jeevan449">https://github.com/jeevan449</a>”,
+“followers_url”: “<a class="reference external" href="https://api.github.com/users/jeevan449/followers">https://api.github.com/users/jeevan449/followers</a>”,
+“following_url”: “<a class="reference external" href="https://api.github.com/users/jeevan449">https://api.github.com/users/jeevan449</a>/following{/other_user}”,
+“gists_url”: “<a class="reference external" href="https://api.github.com/users/jeevan449">https://api.github.com/users/jeevan449</a>/gists{/gist_id}”,
+“starred_url”: “<a class="reference external" href="https://api.github.com/users/jeevan449">https://api.github.com/users/jeevan449</a>/starred{/owner}{/repo}”,
+“subscriptions_url”: “<a class="reference external" href="https://api.github.com/users/jeevan449/subscriptions">https://api.github.com/users/jeevan449/subscriptions</a>”,
+“organizations_url”: “<a class="reference external" href="https://api.github.com/users/jeevan449/orgs">https://api.github.com/users/jeevan449/orgs</a>”,
+“repos_url”: “<a class="reference external" href="https://api.github.com/users/jeevan449/repos">https://api.github.com/users/jeevan449/repos</a>”,
+“events_url”: “<a class="reference external" href="https://api.github.com/users/jeevan449">https://api.github.com/users/jeevan449</a>/events{/privacy}”,
+“received_events_url”: “<a class="reference external" href="https://api.github.com/users/jeevan449/received_events">https://api.github.com/users/jeevan449/received_events</a>”,
+“type”: “User”,
+“site_admin”: false</dd>
+</dl>
+<p>}]
+Unittest for sending GET request and verifying response data &amp; status code .</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>def test_get_following(self):</dt>
+<dd>path = ‘/user/following’
+response = self.rest_obj.send_request(path,method_name=’GET’)   # Step 1
+code = response[‘code’]                                         # Step 2
+data = response[‘data’]                                         # Step 2
+verify_data = self.json.get_key_value(response_data,’login’)    # Step 3
+self.assertEqual(verify_data,’jeevan449’)                       # Step 4
+self.assertEqual(code,200)                                      # Step 4</dd>
+</dl>
+</div></blockquote>
+<p>Passing path and method_name to send_request method.
+Assigning response code and data to variable
+Parsing login key value from the response data.
+Verifying response data and code.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Usage</a><ul>
+<li><a class="reference internal" href="#no-authentication">No authentication</a></li>
+<li><a class="reference internal" href="#with-authentication">With Authentication</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Intro.html" title="previous chapter">Introduction</a></li>
+      <li>Next: <a href="Framework.html" title="next chapter">FrameWork</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Usage.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, jeevanch.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/Usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
