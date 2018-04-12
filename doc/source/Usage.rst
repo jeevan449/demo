@@ -36,7 +36,7 @@ GET Request example:
 |.. image:: images/get_response.JPG|
 +----------------------------------+
 
-Unittest for sending above request and verifing Host value from response::
+Unittest for sending above request and verifing ``Host`` value from response::
 
     def test_get_request(self):
         response =  self.rest.send_request('/get',method_name='GET')
