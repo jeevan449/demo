@@ -22,3 +22,5 @@ pyRestAuto documentation!
    Intro
    Usage
    Framework
+   Reports
+   Examples
