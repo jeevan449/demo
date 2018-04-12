@@ -3,6 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. image:: https://readthedocs.org/projects/demo-pyrestauto/badge/?version=latest
+	:target: http://demo-pyrestauto.readthedocs.io/en/latest/?badge=latest
+	:alt: Documentation Status
+
+.. image:: https://travis-ci.org/qaautomation-in/pyRestAuto.svg?branch=master
+    :target: https://travis-ci.org/qaautomation-in/pyRestAuto	
+
 pyRestAuto documentation!
 =========================
 
