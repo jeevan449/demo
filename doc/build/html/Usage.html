@@ -157,119 +157,132 @@
 <p>Writing unit test cases for REST API’s (No authentication):</p>
 <div class="section" id="no-authentication">
 <h2>No authentication<a class="headerlink" href="#no-authentication" title="Permalink to this headline">¶</a></h2>
-<p>Step-1: Importing pyRest_lib</p>
-<p>from rest_lib import pyRest_lib
-Step-2: Writing the setUp method</p>
-<dl class="docutils">
-<dt>def setUp(self):</dt>
-<dd>self.rest = pyRest_lib.PyRestLib(url=’<a class="reference external" href="https://httpbin.org">https://httpbin.org</a>’)
-self.log = self.rest.get_logObj()
-self.json = self.rest.get_jsonObj()</dd>
-</dl>
-<p>Creating object for PyRestLib class and passing URL as parameter.
-Getting logger &amp; Json object
-Step-3: Writing unittests for GET,POST,PUT,DELETE requests. send_request single method for sending GET/POST/PUT/DELETE request types.</p>
-<p>GET Request example:
-Sample GET request and response.</p>
-<p>HTTP GET request:
-<cite>https://httpbin.org/get&lt;/dd&gt;</cite>
-Response Data</p>
-<blockquote>
-<div><p>“args”: {},
-“headers”: {</p>
-<blockquote>
-<div>“Accept”: “text/html,application/xhtml+xml,application/xml;q=0.9,*/<a href="#id1"><span class="problematic" id="id2">*</span></a>;q=0.8”,
-“Accept-Encoding”: “gzip, deflate, br”,
-“Accept-Language”: “en-US,en;q=0.5”,
-“Connection”: “close”,
-“Cookie”: “_gauges_unique_year=1; _gauges_unique=1; _gauges_unique_month=1; _gauges_unique_hour=1; _gauges_unique_day=1”,
-“Host”: “httpbin.org”,
-“Referer”: “<a class="reference external" href="https://httpbin.org/">https://httpbin.org/</a>”,
-“Upgrade-Insecure-Requests”: “1”,
-“User-Agent”: “Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0”</div></blockquote>
-<p>},
-“origin”: “36.255.85.10”,
-“url”: “<a class="reference external" href="https://httpbin.org/get">https://httpbin.org/get</a>”</p>
-</div></blockquote>
-<p>}
-Unittest for sending above request and verifing Host value from response.
-def test_get_request(self):</p>
-<blockquote>
-<div>response =  self.rest.send_request(‘/get’,method_name=’GET’)
-response_code = response[‘code’]
-response_data = response[‘data’]
-verify_host = self.json.get_key_value(response_data,’Host’)
-response_headers = response[‘headers’]
-self.assertEqual(response_code,200)
-self.assertEqual(verify_host,’httpbin.org’)</div></blockquote>
-<p>Passing path and request method type as passing parameters to send_request.
-return object response contains response data,code and headers and that can be accessed by response[‘data’],response[‘code’] &amp; response[‘headers’].
-Passing response data and key to get_key_value method to get value.
-Asserting response status code &amp; data.
-POST Request example:
-Sample POST request &amp; response.</p>
-<p>HTTP POST Request <a class="reference external" href="https://httpbin.org/post">https://httpbin.org/post</a></p>
-<p>Parameters {‘test’:’post’}
-Response Data</p>
-<dl class="docutils">
-<dt>{</dt>
-<dd><p class="first">“args”: {},
-“data”: “{“test”: “post”}”,
-“files”: {},
-“form”: {},
-“headers”: {</p>
-<blockquote>
-<div>“Accept”: “<em>/</em>”,
-“Accept-Encoding”: “gzip, deflate”,
-“Connection”: “close”,
-“Content-Length”: “16”,
-“Content-Type”: “application/json”,
-“Host”: “httpbin.org”,
-“User-Agent”: “python-requests/2.18.4”</div></blockquote>
-<p>},
-“json”: {</p>
-<blockquote>
-<div>“test”: “post”</div></blockquote>
-<p class="last">},
-“origin”: “36.255.85.10”,
-“url”: “<a class="reference external" href="https://httpbin.org/post">https://httpbin.org/post</a>”</p>
-</dd>
-</dl>
-<p>}
-def test_post_request(self):</p>
-<blockquote>
-<div><p>data = {‘test’:’post’} # Step 1
-json_data = self.json.dump_json_data(data) # Step 1
-response = self.rest.send_request(‘/post’,method_name=’POST’,</p>
-<blockquote>
-<div>parameters=json_data)</div></blockquote>
-<p>response_code = response[‘code’]
-response_data = response[‘data’]
-verify_response_data = self.json.get_key_value(response_data,’test’)
-self.assertEqual(response_code, 200)
-self.assertEqual(verify_response_data,’post’)</p>
-</div></blockquote>
-<p>Converting python dictionary into JSON data.
-Passing path and request method type as parameters to send_request.
-return object response contains response data,code and headers and that can be accessed by response[‘data’],response[‘code’] &amp; response[‘headers’].
-Passing response data and key to get_key_value method to get value.
-Asserting response status code &amp; data.
-Same way for PUT &amp; DELETE request.
+<p><strong>Step-1:</strong> Importing pyRest_lib</p>
+<p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">rest_lib</span> <span class="pre">import</span> <span class="pre">pyRest_lib</span></code></p>
+<p><strong>Step-2</strong>: Writing the setUp method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rest</span> <span class="o">=</span> <span class="n">pyRest_lib</span><span class="o">.</span><span class="n">PyRestLib</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://httpbin.org&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">get_logObj</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">get_jsonObj</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Creating object for PyRestLib class and passing URL as parameter.</li>
+<li>Getting logger &amp; Json object</li>
+</ul>
+<p><strong>Step-3:</strong> Writing unittests for GET,POST,PUT,DELETE requests. send_request single method for sending GET/POST/PUT/DELETE request types.</p>
+<p>GET Request example:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="57%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">GET Request</th>
+<th class="head">Parameters</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="https://httpbin.org/get">https://httpbin.org/get</a></td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Response Data</td>
+</tr>
+<tr class="row-even"><td><img alt="_images/get_response.JPG" class="first last" src="_images/get_response.JPG" />
+</td>
+</tr>
+</tbody>
+</table>
+<p>Unittest for sending above request and verifing Host value from response:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_get_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">send_request</span><span class="p">(</span><span class="s1">&#39;/get&#39;</span><span class="p">,</span><span class="n">method_name</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">)</span>
+    <span class="n">response_code</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span>
+    <span class="n">response_data</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="n">verify_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">get_key_value</span><span class="p">(</span><span class="n">response_data</span><span class="p">,</span><span class="s1">&#39;Host&#39;</span><span class="p">)</span>
+    <span class="n">response_headers</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;headers&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_code</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">verify_host</span><span class="p">,</span><span class="s1">&#39;httpbin.org&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Passing path and request method type as passing parameters to send_request.</li>
+<li>return object response contains response data,code and headers and that can be accessed by response[‘data’],response[‘code’] &amp; response[‘headers’].</li>
+<li>Passing response data and key to get_key_value method to get value.</li>
+<li>Asserting response status code &amp; data.</li>
+<li>POST Request example:</li>
+<li>Sample POST request &amp; response.</li>
+</ul>
+<p>HTTP POST Request:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="57%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">GET Request</th>
+<th class="head">Parameters</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="https://httpbin.org/post">https://httpbin.org/post</a></td>
+<td>{‘test’:’post’}</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Response Data</td>
+</tr>
+<tr class="row-even"><td><img alt="_images/post_response.JPG" class="first last" src="_images/post_response.JPG" />
+</td>
+</tr>
+</tbody>
+</table>
+<p>Code for sending above request:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>def test_post_request(self):
+    data = {&#39;test&#39;:&#39;post&#39;} # Step 1
+    json_data = self.json.dump_json_data(data) # Step 1
+    response = self.rest.send_request(&#39;/post&#39;,method_name=&#39;POST&#39;,
+                                      parameters=json_data)
+    response_code = response[&#39;code&#39;]
+    response_data = response[&#39;data&#39;]
+    verify_response_data = self.json.get_key_value(response_data,&#39;test&#39;)
+    self.assertEqual(response_code, 200)
+    self.assertEqual(verify_response_data,&#39;post&#39;)``
+</pre></div>
+</div>
+<ul class="simple">
+<li>Converting python dictionary into JSON data.</li>
+<li>Passing path and request method type as parameters to send_request.</li>
+<li>Response contains response data,code and headers and that can be accessed by response[‘data’],response[‘code’] &amp; response[‘headers’].</li>
+<li>Passing response data and key to get_key_value method to get value.</li>
+<li>Asserting response status code &amp; data.</li>
+</ul>
+<p>Same way for PUT &amp; DELETE request
 PUT Request example:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>def test_put_request(self):</dt>
-<dd>response = self.rest.send_request(‘/put’,method_name=’PUT’)
-code = response[‘code’]
-self.assertEqual(code, 200)</dd>
-</dl>
-</div></blockquote>
-<p>DELETE Request example:
-def test_delete_request(self):</p>
-<blockquote>
-<div>response = self.rest.send_request(‘/delete’,method_name=’DELETE’)
-code = response[‘code’]
-self.assertEqual(code, 200)</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_put_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">send_request</span><span class="p">(</span><span class="s1">&#39;/put&#39;</span><span class="p">,</span><span class="n">method_name</span><span class="o">=</span><span class="s1">&#39;PUT&#39;</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>DELETE Request example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_delete_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">send_request</span><span class="p">(</span><span class="s1">&#39;/delete&#39;</span><span class="p">,</span><span class="n">method_name</span><span class="o">=</span><span class="s1">&#39;DELETE&#39;</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Writing unit test cases for REST API’s with authentication):</p>
 </div>
 <div class="section" id="with-authentication">
